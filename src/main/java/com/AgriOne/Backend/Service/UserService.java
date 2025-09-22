@@ -6,10 +6,13 @@ import com.AgriOne.Backend.DTO.UserResponseDTO;
 import com.AgriOne.Backend.Entity.User;
 import com.AgriOne.Backend.Mapper.UserMapper;
 import com.AgriOne.Backend.Repository.UserRepository;
+import com.AgriOne.Backend.Util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -23,6 +26,9 @@ public class UserService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private JwtUtil jwtUtil;
 
     // Registration
     public UserResponseDTO register(UserRegisterDTO dto) {
@@ -43,8 +49,8 @@ public class UserService {
         return userMapper.toResponseDTO(savedUser);
     }
 
-    // Login using identifier (phone or email)
-    public UserResponseDTO login(UserLoginDTO dto) {
+    // Login using identifier (phone or email) and return JWT
+    public Map<String, Object> login(UserLoginDTO dto) {
         String identifier = dto.getIdentifier();
 
         Optional<User> userOptional;
@@ -60,6 +66,14 @@ public class UserService {
             throw new RuntimeException("Invalid phone/email or password");
         }
 
-        return userMapper.toResponseDTO(user);
+        // Generate JWT
+        String token = jwtUtil.generateToken(user);
+
+        // Prepare response
+        Map<String, Object> response = new HashMap<>();
+        response.put("user", userMapper.toResponseDTO(user));
+        response.put("token", token);
+
+        return response;
     }
 }
