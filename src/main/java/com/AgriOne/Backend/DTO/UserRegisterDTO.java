@@ -10,4 +10,6 @@ public class UserRegisterDTO {
     private String email;         // optional
     private String password;
     private Role role;
+
+    
 }

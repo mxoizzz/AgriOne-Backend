@@ -18,4 +18,8 @@ public class UserResponseDTO {
     private Role role;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+
+    // Essential extra fields
+    private Double wallet;        // Farmer's earnings
+    private boolean hasBankInfo; // true if bankAccountNumber and ifscCode are set
 }

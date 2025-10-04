@@ -22,6 +22,12 @@ public class UserMapper {
         dto.setCreatedAt(user.getCreatedAt());
         dto.setUpdatedAt(user.getUpdatedAt());
 
+        // Safe fields
+        dto.setWallet(user.getWallet());
+        dto.setHasBankInfo(user.getBankAccountNumber() != null
+                || user.getIfscCode() != null
+                || user.getUpiId() != null);
+
         return dto;
     }
 
@@ -45,5 +51,10 @@ public class UserMapper {
         if (dto.getPhoneNumber() != null) user.setPhoneNumber(dto.getPhoneNumber());
         if (dto.getEmail() != null) user.setEmail(dto.getEmail());
         if (dto.getPassword() != null) user.setPassword(dto.getPassword());
+
+        // Payout info update
+        if (dto.getBankAccountNumber() != null) user.setBankAccountNumber(dto.getBankAccountNumber());
+        if (dto.getIfscCode() != null) user.setIfscCode(dto.getIfscCode());
+        if (dto.getUpiId() != null) user.setUpiId(dto.getUpiId());
     }
 }

@@ -1,29 +1,23 @@
 package com.AgriOne.Backend.Entity;
 
 import java.time.LocalDateTime;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
-import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.persistence.*;
+import lombok.*;
 
 @Entity
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "users")
 public class User {
+
+    public enum Role {
+        FARMER,
+        AGENT,
+        BUYER
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -31,11 +25,11 @@ public class User {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = true, unique = true)
-    private String email;
+    @Column(unique = true)
+    private String email; // optional
 
     @Column(nullable = false, unique = true)
-    private String phoneNumber;
+    private String phoneNumber; // primary login identifier
 
     @Column(nullable = false)
     private String password;
@@ -47,6 +41,17 @@ public class User {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
+    // Farmer payout info
+    private String bankAccountNumber; // for payouts
+    private String ifscCode;          // for payouts
+    private String upiId;             // optional alternative
+
+    // Platform mapping / mock payment
+    private String beneficiaryId;
+
+    // Platform wallet (mock earnings)
+    private Double wallet = 0.0;
+
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
@@ -57,12 +62,4 @@ public class User {
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
     }
-
-
-    public enum Role {
-        FARMER,
-        AGENT,
-        BUYER
-    }
 }
-
